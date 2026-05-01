@@ -1,0 +1,235 @@
+<Page
+  x:Class="TradeSystem.App.Views.Pages.SettingsPage"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:TradeSystem.App.Views.Pages"
+  xmlns:models="clr-namespace:TradeSystem.App.Models"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+  Title="NavigationMenus"
+  d:DataContext="{d:DesignInstance local:SettingsPage, IsDesignTimeCreatable=False}"
+  d:DesignHeight="680"
+  d:DesignWidth="1100"
+  ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+  ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+  mc:Ignorable="d">
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="MenuTreeItemStyle" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="Visibility" Value="{Binding IsVisibleInFilter, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <Setter Property="AllowDrop" Value="True" />
+            <EventSetter Event="PreviewMouseLeftButtonDown" Handler="MenuTreeItem_OnPreviewMouseLeftButtonDown" />
+            <EventSetter Event="PreviewMouseMove" Handler="MenuTreeItem_OnPreviewMouseMove" />
+            <EventSetter Event="DragOver" Handler="MenuTreeItem_OnDragOver" />
+            <EventSetter Event="Drop" Handler="MenuTreeItem_OnDrop" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border
+          Grid.Row="0"
+          Margin="0,0,0,16"
+          Padding="18,14"
+          Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+          BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+          BorderThickness="1"
+          CornerRadius="8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock FontSize="22" FontWeight="SemiBold" Text="菜单配置" />
+                    <TextBlock
+                      Margin="0,6,0,0"
+                      Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                      Text="{Binding ViewModel.StatusMessage}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button
+                      MinWidth="86"
+                      Margin="0,0,10,0"
+                      Padding="14,8"
+                      Command="{Binding ViewModel.SaveDraftCommand}"
+                      Content="保存" />
+                    <Button
+                      MinWidth="86"
+                      Padding="14,8"
+                      Command="{Binding ViewModel.PublishCommand}"
+                      Content="发布" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+              Grid.Column="0"
+              Padding="18"
+              Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+              BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+              BorderThickness="1"
+              CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock FontSize="18" FontWeight="SemiBold" Text="菜单树" />
+                        <Button
+                          Grid.Column="1"
+                          Padding="12,7"
+                          Command="{Binding ViewModel.AddTopLevelMenuCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Width="16" Height="16" VerticalAlignment="Center" Symbol="Add24" />
+                                <TextBlock Margin="6,0,0,0" VerticalAlignment="Center" Text="添加顶级菜单" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBox
+                      Grid.Row="1"
+                      Margin="0,14,0,12"
+                      Padding="10,8"
+                      Text="{Binding ViewModel.SearchText, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TreeView
+                      x:Name="MenuTree"
+                      Grid.Row="2"
+                      BorderThickness="0"
+                      ItemContainerStyle="{StaticResource MenuTreeItemStyle}"
+                      ItemsSource="{Binding ViewModel.RootMenus}"
+                      SelectedItemChanged="MenuTree_OnSelectedItemChanged">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type models:NavigationMenuDraftItem}" ItemsSource="{Binding Children}">
+                                <Grid MinHeight="34" Margin="0,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="26" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ui:SymbolIcon
+                                      Width="20"
+                                      Height="20"
+                                      VerticalAlignment="Center"
+                                      Symbol="{Binding IconSymbol}" />
+                                    <StackPanel Grid.Column="1" Margin="8,0,8,0">
+                                        <TextBlock FontWeight="SemiBold" Text="{Binding Title}" />
+                                        <TextBlock
+                                          FontSize="11"
+                                          Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                          Text="{Binding TargetPageTag}" />
+                                    </StackPanel>
+                                    <Button
+                                      Grid.Column="2"
+                                      Width="28"
+                                      Height="28"
+                                      Margin="0,0,4,0"
+                                      Command="{Binding DataContext.ViewModel.AddChildMenuCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                      CommandParameter="{Binding}"
+                                      ToolTip="添加子菜单">
+                                        <ui:SymbolIcon Width="16" Height="16" Symbol="Add24" />
+                                    </Button>
+                                    <Button
+                                      Grid.Column="3"
+                                      Width="28"
+                                      Height="28"
+                                      Command="{Binding DataContext.ViewModel.DeleteMenuCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                      CommandParameter="{Binding}"
+                                      ToolTip="删除菜单">
+                                        <ui:SymbolIcon Width="16" Height="16" Symbol="Delete24" />
+                                    </Button>
+                                </Grid>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </Grid>
+            </Border>
+
+            <Border
+              Grid.Column="2"
+              Padding="22"
+              Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+              BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+              BorderThickness="1"
+              CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock FontSize="18" FontWeight="SemiBold" Text="详情编辑" />
+
+                    <ScrollViewer Grid.Row="1" Margin="0,18,0,0" VerticalScrollBarVisibility="Auto">
+                        <Grid DataContext="{Binding ViewModel.SelectedMenu}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="18" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
+                                <TextBlock Margin="0,0,0,6" Text="菜单名称" />
+                                <TextBox Padding="10,8" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
+                                <TextBlock Margin="0,0,0,6" Text="页面" />
+                                <ComboBox
+                                  Padding="8"
+                                  IsEnabled="{Binding IsPageMenu}"
+                                  ItemsSource="{Binding DataContext.ViewModel.PageOptions, RelativeSource={RelativeSource AncestorType=Page}}"
+                                  SelectedItem="{Binding TargetPageTag, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
+                                <TextBlock Margin="0,0,0,6" Text="图标" />
+                                <ComboBox
+                                  Padding="8"
+                                  ItemsSource="{Binding DataContext.ViewModel.IconOptions, RelativeSource={RelativeSource AncestorType=Page}}"
+                                  SelectedItem="{Binding Icon, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,16">
+                                <TextBlock Margin="0,0,0,6" Text="排序号" />
+                                <TextBox Padding="10,8" IsReadOnly="True" Text="{Binding Order}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,8,0,16">
+                                <CheckBox Margin="0,0,0,10" Content="分组 / 容器" IsChecked="{Binding IsGroup}" />
+                                <CheckBox Content="显示" IsChecked="{Binding IsVisible}" />
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

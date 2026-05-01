@@ -10,5 +10,5 @@
 </Application>
 <!--
     这个文件定义了 WPF 应用程序的入口点和全局资源。
-    StartupUri="MainWindow.xaml" 指定了应用程序启动时显示的主窗口。
+    StartupUri="MainWindow.xaml" 指定了应用程序启动时显示的主窗口。s 
     Application.Resources 部分可以用来定义全局可用的资源，如样式、模板等。>
