@@ -16,7 +16,7 @@ namespace TradeSystem.Core.Abstractions
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        T Find<T>(int id) where T : class;
+        T? Find<T>(int id) where T : class;
 
         /// <summary>
         /// 提供对单表的查询

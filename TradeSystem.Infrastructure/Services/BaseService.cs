@@ -28,7 +28,7 @@ namespace TradeSystem.Infrastructure.Services
         /// <typeparam name="T"></typeparam>
         /// <param name="id"></param>
         /// <returns></returns>
-        public T Find<T>(int id) where T : class
+        public T? Find<T>(int id) where T : class
         {
             return Context.Set<T>().Find(id);
         }
@@ -175,7 +175,7 @@ namespace TradeSystem.Infrastructure.Services
         public void Delete<T>(int Id) where T : class
         {
 
-            T t = Find<T>(Id);//也可以附加
+            T? t = Find<T>(Id);//也可以附加
             if (t == null) throw new Exception("t is null");
             Context.Set<T>().Remove(t);
             Commit();
