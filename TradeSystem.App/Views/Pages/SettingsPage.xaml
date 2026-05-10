@@ -223,7 +223,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,8,0,16">
-                                <CheckBox Margin="0,0,0,10" Content="分组 / 容器" IsChecked="{Binding IsGroup}" />
+                                <CheckBox Margin="0,0,0,10" Content="分组" IsChecked="{Binding IsGroup}" />
                                 <CheckBox Content="显示" IsChecked="{Binding IsVisible}" />
                             </StackPanel>
                         </Grid>
