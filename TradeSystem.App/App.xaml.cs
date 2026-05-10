@@ -32,6 +32,7 @@ public partial class App : Application
             mainWindow.Show();
 
             base.OnStartup(e);
+            // 我讨厌廖璐瑶
         }
 
         protected override async void OnExit(ExitEventArgs e)
