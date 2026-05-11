@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -62,7 +62,10 @@ namespace TradeSystem.App.Configuration
                     services.AddSingleton<SettingsPage>();
                     services.AddSingleton<SettingsViewModel>();
 
-                    // 注册交易所服务
+                    services.AddSingleton<Test2Page>();
+                    services.AddSingleton<Test2ViewModel>();
+
+                                        // 注册交易所服务
                     services.AddKeyedScoped<IExchangeService, BinanceService>("Binance");
                     services.AddKeyedScoped<IExchangeService, OkxService>("OKX");
                 })
