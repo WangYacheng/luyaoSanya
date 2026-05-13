@@ -8,6 +8,7 @@ using TradeSystem.App.ViewModels;
 using TradeSystem.App.Views;
 using TradeSystem.App.Views.Pages;
 using TradeSystem.Infrastructure.Data;
+using TradeSystem.App.Services;
 using TradeSystem.Infrastructure.Services;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
@@ -61,11 +62,20 @@ namespace TradeSystem.App.Configuration
                     services.AddSingleton<DataViewModel>();
                     services.AddSingleton<SettingsPage>();
                     services.AddSingleton<SettingsViewModel>();
-
+                    services.AddSingleton<Test1Page>();
+                    services.AddSingleton<Test1ViewModel>();
                     services.AddSingleton<Test2Page>();
                     services.AddSingleton<Test2ViewModel>();
+                    services.AddSingleton<Test3Page>();
+                    services.AddSingleton<Test3ViewModel>();
+                    services.AddSingleton<DataDownloadService>();
+                    services.AddSingleton<DataDownloadViewModel>();
+                    services.AddSingleton<DataDownloadPage>();
+                    services.AddSingleton<RankingService>();
+                    services.AddSingleton<RankingViewModel>();
+                    services.AddSingleton<RankingPage>();
 
-                                        // 注册交易所服务
+                    // 注册交易所服务
                     services.AddKeyedScoped<IExchangeService, BinanceService>("Binance");
                     services.AddKeyedScoped<IExchangeService, OkxService>("OKX");
                 })

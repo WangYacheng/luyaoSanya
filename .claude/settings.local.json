@@ -9,7 +9,11 @@
       "Bash(dotnet build *)",
       "Bash(powershell.exe -ExecutionPolicy Bypass -Command \"git checkout -- TradeSystem.App/Configuration/ServiceRegistration.cs\")",
       "Bash(powershell.exe -ExecutionPolicy Bypass -File ./_test_names.ps1)",
-      "Bash(powershell.exe -ExecutionPolicy Bypass -Command \"Remove-Item -Path 'TradeSystem.App\\\\Views\\\\Pages\\\\TestGen*' -Force; Remove-Item -Path 'TradeSystem.App\\\\ViewModels\\\\TestGen*' -Force; Remove-Item -Path 'TradeSystem.App\\\\Configuration\\\\ServiceRegistration.cs' -Force; git checkout -- TradeSystem.App/Configuration/ServiceRegistration.cs\")"
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command \"Remove-Item -Path 'TradeSystem.App\\\\Views\\\\Pages\\\\TestGen*' -Force; Remove-Item -Path 'TradeSystem.App\\\\ViewModels\\\\TestGen*' -Force; Remove-Item -Path 'TradeSystem.App\\\\Configuration\\\\ServiceRegistration.cs' -Force; git checkout -- TradeSystem.App/Configuration/ServiceRegistration.cs\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command \"& { . .\\\\Run-App.ps1; Write-Host 'script syntax OK' }\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File ./Run-App.ps1)",
+      "Bash(dotnet list *)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command \"Add-Type -Path 'obj\\\\Debug\\\\net10.0-windows\\\\TradeSystem.App.dll' 2>&1 | Out-Null; [Enum]::GetNames\\([Binance.Net.Enums.KlineInterval]\\) 2>&1\")"
     ]
   }
 }

@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Wpf.Ui.Abstractions.Controls;
 
-namespace TradeSystem.App.Views.Pages
+namespace TradeSystem.App.Views.Pages;
+
+/// <summary>
+/// Interaction logic for Test1Page.xaml
+/// </summary>
+public partial class Test1Page : INavigableView<ViewModels.Test1ViewModel>
 {
-    /// <summary>
-    /// Test1Page.xaml 的交互逻辑
-    /// </summary>
-    public partial class Test1Page : Page
+    public ViewModels.Test1ViewModel ViewModel { get; }
+
+    public Test1Page(ViewModels.Test1ViewModel viewModel)
     {
-        public Test1Page()
-        {
-            InitializeComponent();
-        }
+        ViewModel = viewModel;
+        DataContext = this;
+
+        InitializeComponent();
     }
 }

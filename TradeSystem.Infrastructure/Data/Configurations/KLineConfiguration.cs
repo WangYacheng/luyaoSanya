@@ -23,12 +23,12 @@ namespace TradeSystem.Infrastructure.Data.Configurations
             builder.Property(e => e.Symbol).IsRequired().HasMaxLength(20);
 
             // 精度配置
-            builder.Property(e => e.Open).HasPrecision(18, 8);
-            builder.Property(e => e.High).HasPrecision(18, 8);
-            builder.Property(e => e.Low).HasPrecision(18, 8);
-            builder.Property(e => e.Close).HasPrecision(18, 8);
-            builder.Property(e => e.Volume).HasPrecision(18, 8);
-            builder.Property(e => e.QuoteVolume).HasPrecision(18, 8);
+            builder.Property(e => e.Open).HasPrecision(28, 8);
+            builder.Property(e => e.High).HasPrecision(28, 8);
+            builder.Property(e => e.Low).HasPrecision(28, 8);
+            builder.Property(e => e.Close).HasPrecision(28, 8);
+            builder.Property(e => e.Volume).HasPrecision(28, 8);
+            builder.Property(e => e.QuoteVolume).HasPrecision(28, 8);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TradeSystem.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using TradeSystem.Infrastructure.Data;
 namespace TradeSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511091023_AddKLineDataType")]
+    partial class AddKLineDataType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,8 +34,8 @@ namespace TradeSystem.Infrastructure.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<decimal>("Close")
-                        .HasPrecision(28, 8)
-                        .HasColumnType("decimal(28,8)");
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
                     b.Property<string>("Exchange")
                         .IsRequired()
@@ -40,23 +43,23 @@ namespace TradeSystem.Infrastructure.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<decimal>("High")
-                        .HasPrecision(28, 8)
-                        .HasColumnType("decimal(28,8)");
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
                     b.Property<decimal>("Low")
-                        .HasPrecision(28, 8)
-                        .HasColumnType("decimal(28,8)");
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
                     b.Property<decimal>("Open")
-                        .HasPrecision(28, 8)
-                        .HasColumnType("decimal(28,8)");
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
                     b.Property<DateTime>("OpenTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<decimal>("QuoteVolume")
-                        .HasPrecision(28, 8)
-                        .HasColumnType("decimal(28,8)");
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
                     b.Property<string>("Symbol")
                         .IsRequired()
@@ -71,8 +74,8 @@ namespace TradeSystem.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Volume")
-                        .HasPrecision(28, 8)
-                        .HasColumnType("decimal(28,8)");
+                        .HasPrecision(18, 8)
+                        .HasColumnType("decimal(18,8)");
 
                     b.HasKey("Id");
 

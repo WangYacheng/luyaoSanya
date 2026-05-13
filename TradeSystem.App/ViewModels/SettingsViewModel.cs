@@ -449,11 +449,31 @@ public partial class SettingsViewModel : ViewModel
             },
             new NavigationMenuItem
             {
+                Id = -4,
+                Title = "数据入库",
+                Icon = "DataDownload24",
+                TargetPageTag = nameof(DataDownloadPage),
+                Order = 3,
+                IsGroup = false,
+                IsVisible = true
+            },
+            new NavigationMenuItem
+            {
+                Id = -5,
+                Title = "排行榜",
+                Icon = "DataTrend24",
+                TargetPageTag = nameof(RankingPage),
+                Order = 4,
+                IsGroup = false,
+                IsVisible = true
+            },
+            new NavigationMenuItem
+            {
                 Id = -3,
                 Title = "菜单配置",
                 Icon = "Settings24",
                 TargetPageTag = nameof(SettingsPage),
-                Order = 3,
+                Order = 5,
                 IsGroup = false,
                 IsVisible = true
             }
