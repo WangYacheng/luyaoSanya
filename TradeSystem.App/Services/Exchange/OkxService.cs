@@ -47,16 +47,16 @@ public class OkxService : IExchangeService
                 .Select(s => s.Symbol);
         }
 
-        public async Task<IEnumerable<KLineData>> GetKlinesAsync(string symbol, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100)
+        public async Task<IEnumerable<KLineData>> GetKlinesAsync(string symbol, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100, bool confirm = true)
         {
             var okxInterval = MapInterval(interval);
-            
-            // 修正：OKX V5 API K线接口在 UnifiedApi 下
-            var result = await _client.UnifiedApi.ExchangeData.GetKlineHistoryAsync(symbol, okxInterval, startTime, endTime, limit);
-            
+
+            var result = await _client.UnifiedApi.ExchangeData.GetKlinesAsync(symbol, okxInterval, startTime, endTime, limit);
+
             if (!result.Success) return Enumerable.Empty<KLineData>();
 
-            return result.Data.Where(x=>x.Confirm==true).Select(k => new KLineData
+            var data = confirm ? result.Data.Where(x => x.Confirm == true) : result.Data;
+            return data.Select(k => new KLineData
             {
                 Symbol = symbol,
                 OpenTime = k.Time,
@@ -70,17 +70,17 @@ public class OkxService : IExchangeService
             });
         }
 
-        public async Task<Dictionary<string, IEnumerable<KLineData>>> GetMultipleKlinesAsync(IEnumerable<string> symbols, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100)
+        public async Task<Dictionary<string, IEnumerable<KLineData>>> GetMultipleKlinesAsync(IEnumerable<string> symbols, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100, bool confirm = true)
         {
             var results = new Dictionary<string, IEnumerable<KLineData>>();
             using var semaphore = new SemaphoreSlim(5);
-            
+
             var tasks = symbols.Select(async symbol =>
             {
                 await semaphore.WaitAsync();
                 try
                 {
-                    var klines = await GetKlinesAsync(symbol, interval, startTime, endTime, limit);
+                    var klines = await GetKlinesAsync(symbol, interval, startTime, endTime, limit, confirm);
                     lock (results)
                     {
                         results[symbol] = klines;
@@ -134,6 +134,7 @@ public class OkxService : IExchangeService
         {
             if (interval.TotalMinutes == 1) return KlineInterval.OneMinute;
             if (interval.TotalMinutes == 5) return KlineInterval.FiveMinutes;
+            if (interval.TotalMinutes == 15) return KlineInterval.FifteenMinutes;
             if (interval.TotalHours == 1) return KlineInterval.OneHour;
             if (interval.TotalHours == 4) return KlineInterval.FourHours;
             return KlineInterval.OneDay;

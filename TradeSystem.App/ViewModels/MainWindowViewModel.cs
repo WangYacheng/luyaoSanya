@@ -141,6 +141,7 @@ public partial class MainWindowViewModel : ViewModel
         workspace.MenuItems.Add(CreateNavigationItem("Data", "DataHistogram24", typeof(DataPage)));
         workspace.MenuItems.Add(CreateNavigationItem("数据入库", "DataDownload24", typeof(DataDownloadPage)));
         workspace.MenuItems.Add(CreateNavigationItem("排行榜", "DataTrend24", typeof(RankingPage)));
+        workspace.MenuItems.Add(CreateNavigationItem("K线排行榜", "DataScatter24", typeof(KLineRankingPage)));
 
         NavigationItems =
         [

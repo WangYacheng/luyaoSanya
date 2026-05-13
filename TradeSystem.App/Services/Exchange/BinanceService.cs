@@ -44,18 +44,18 @@ public class BinanceService : IExchangeService
         }
     }
 
-    public async Task<IEnumerable<KLineData>> GetKlinesAsync(string symbol, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100)
+    public async Task<IEnumerable<KLineData>> GetKlinesAsync(string symbol, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100, bool confirm = true)
     {
         var binanceInterval = MapInterval(interval);
 
-        // Switch API based on the stored private field
         var result = _currentMarketType == MarketType.Spot
             ? await _client.SpotApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval, startTime, endTime, limit)
             : await _client.UsdFuturesApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval, startTime, endTime, limit);
 
         if (!result.Success) return Enumerable.Empty<KLineData>();
 
-        return result.Data.Where(x => x.CloseTime < DateTime.UtcNow).Select(k => new KLineData
+        var data = confirm ? result.Data.Where(x => x.CloseTime < DateTime.UtcNow) : result.Data;
+        return data.Select(k => new KLineData
         
         {
             Symbol = symbol,
@@ -66,12 +66,11 @@ public class BinanceService : IExchangeService
             Close = k.ClosePrice,
             Volume = k.Volume,
             QuoteVolume = k.QuoteVolume
-            QuoteVolume = k.QuoteVolume
             //CreateTime = DateTime.Now 
         });
     }
 
-    public async Task<Dictionary<string, IEnumerable<KLineData>>> GetMultipleKlinesAsync(IEnumerable<string> symbols, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100)
+    public async Task<Dictionary<string, IEnumerable<KLineData>>> GetMultipleKlinesAsync(IEnumerable<string> symbols, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100, bool confirm = true)
     {
         var results = new Dictionary<string, IEnumerable<KLineData>>();
         using var semaphore = new SemaphoreSlim(5);
@@ -81,7 +80,7 @@ public class BinanceService : IExchangeService
             await semaphore.WaitAsync();
             try
             {
-                var klines = await GetKlinesAsync(symbol, interval, startTime, endTime, limit);
+                var klines = await GetKlinesAsync(symbol, interval, startTime, endTime, limit, confirm);
                 lock (results)
                 {
                     results[symbol] = klines;
@@ -115,7 +114,6 @@ public class BinanceService : IExchangeService
                 Volume = t.Volume, // 现货中 Volume 通常指总成交额，TotalTradingVolume 指成交量
                 OpenTime = t.OpenTime,         // 使用接口返回的实际开启时间
                 //CloseTime = t.CloseTime        // 使用接口返回的实际结束时间
-                Open=t.OpenPrice
                 Open=t.OpenPrice
             });
         }
@@ -151,23 +149,12 @@ public class BinanceService : IExchangeService
             StringComparer.OrdinalIgnoreCase);
     }
 
-    public async Task<Dictionary<string, decimal>> Get24HChangePercentAsync()
-    {
-        var result = await _client.UsdFuturesApi.ExchangeData.GetTickersAsync();
-        if (!result.Success) return [];
-
-        return result.Data.ToDictionary(
-            t => t.Symbol,
-            t => t.PriceChangePercent,
-            StringComparer.OrdinalIgnoreCase);
-    }
-
     private Binance.Net.Enums.KlineInterval MapInterval(TimeSpan interval)
     {
         if (interval.TotalMinutes == 1) return Binance.Net.Enums.KlineInterval.OneMinute;
         if (interval.TotalMinutes == 5) return Binance.Net.Enums.KlineInterval.FiveMinutes;
+        if (interval.TotalMinutes == 15) return Binance.Net.Enums.KlineInterval.FifteenMinutes;
         if (interval.TotalHours == 1) return Binance.Net.Enums.KlineInterval.OneHour;
-        if (interval.TotalHours == 4) return Binance.Net.Enums.KlineInterval.FourHour;
         if (interval.TotalHours == 4) return Binance.Net.Enums.KlineInterval.FourHour;
         return Binance.Net.Enums.KlineInterval.OneDay;
     }

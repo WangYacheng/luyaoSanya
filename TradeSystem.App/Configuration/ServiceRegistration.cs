@@ -74,6 +74,8 @@ namespace TradeSystem.App.Configuration
                     services.AddSingleton<RankingService>();
                     services.AddSingleton<RankingViewModel>();
                     services.AddSingleton<RankingPage>();
+                    services.AddSingleton<KLineRankingViewModel>();
+                    services.AddSingleton<KLineRankingPage>();
 
                     // 注册交易所服务
                     services.AddKeyedScoped<IExchangeService, BinanceService>("Binance");

@@ -24,10 +24,10 @@ public enum MarketType
         Task<IEnumerable<string>> GetSymbolsAsync(MarketType marketType = MarketType.Swap, string quoteAsset = "USDT");
         
         // Get history Klines for a single symbol
-        Task<IEnumerable<KLineData>> GetKlinesAsync(string symbol, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100);
-        
+        Task<IEnumerable<KLineData>> GetKlinesAsync(string symbol, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100, bool confirm = true);
+
         // Get history Klines for multiple symbols
-        Task<Dictionary<string, IEnumerable<KLineData>>> GetMultipleKlinesAsync(IEnumerable<string> symbols, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100);
+        Task<Dictionary<string, IEnumerable<KLineData>>> GetMultipleKlinesAsync(IEnumerable<string> symbols, TimeSpan interval, DateTime? startTime = null, DateTime? endTime = null, int limit = 100, bool confirm = true);
         
         // Get 24h ticker summaries for all symbols
         Task<IEnumerable<KLineData>> GetAll24HSummariesAsync();

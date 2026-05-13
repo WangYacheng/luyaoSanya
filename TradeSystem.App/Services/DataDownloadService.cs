@@ -38,7 +38,7 @@ public class DataDownloadService
     private async ValueTask EnsureSymbolsAsync()
     {
         if (_symbolsInitialized) return;
-        (_okxSymbols, _binanceSymbols) = await TestSymbolUnion();
+        (_okxSymbols, _binanceSymbols) = await GetSymbolUnionAsync();
         _symbolsInitialized = true;
     }
 
@@ -163,7 +163,7 @@ public class DataDownloadService
         });
     }
 
-    private async Task<(List<string> Okx, List<string> Binance)> TestSymbolUnion()
+    public async Task<(List<string> Okx, List<string> Binance)> GetSymbolUnionAsync()
     {
         try
         {
