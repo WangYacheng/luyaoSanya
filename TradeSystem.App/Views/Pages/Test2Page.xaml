@@ -1,40 +1,157 @@
-﻿
-<Page
+<Page x:Class="TradeSystem.App.Views.Pages.Test2Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:TradeSystem.App.Views.Pages"
+      mc:Ignorable="d" Background="#F3F3F3"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="方法测试">
 
-  x:Class="TradeSystem.App.Views.Pages.Test2Page"
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        <!-- 上部：方法调用区 -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <!-- 测试方法按钮组 -->
+            <GroupBox Header="测试方法" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8">
+                <WrapPanel Orientation="Horizontal" Margin="5">
+                    <Button Content="获取交易对"
+                            Command="{Binding ViewModel.TestGetSymbolsCommand}"
+                            Width="110" Height="35" Margin="0,0,8,8"
+                            Background="#007ACC" Foreground="White" BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
 
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    <Button Content="OKX 诊断"
+                            Command="{Binding ViewModel.TestGetSymbolsRawCommand}"
+                            Width="110" Height="35" Margin="0,0,8,8"
+                            Background="#CC6600" Foreground="White" BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
 
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    <Button Content="Binance 交易对"
+                            Command="{Binding ViewModel.TestGetBinanceSymbolsCommand}"
+                            Width="120" Height="35" Margin="0,0,8,8"
+                            Background="#F0B90B" Foreground="#1E2329" BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
 
-  xmlns:local="clr-namespace:TradeSystem.App.Views.Pages"
+                    <Button Content="Binance 诊断"
+                            Command="{Binding ViewModel.TestGetBinanceSymbolsRawCommand}"
+                            Width="120" Height="35" Margin="0,0,0,8"
+                            Background="#F0B90B" Foreground="#1E2329" BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
 
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    <Button Content="OKX 24H 涨跌"
+                            Command="{Binding ViewModel.TestOkx24HKLineCommand}"
+                            Width="130" Height="35" Margin="0,0,0,8"
+                            Background="#CC6600" Foreground="White" BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
 
-  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    <Button Content="Binance 24H 涨跌"
+                            Command="{Binding ViewModel.TestBinance24HKLineCommand}"
+                            Width="140" Height="35" Margin="0,0,0,8"
+                            Background="#F0B90B" Foreground="#1E2329" BorderThickness="0"
+                            Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </WrapPanel>
+            </GroupBox>
 
-  Title="Test2Page"
+            <!-- 参数输入区 -->
+            <GroupBox Header="参数输入" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-  d:DataContext="{d:DesignInstance local:Test2Page, IsDesignTimeCreatable=False}"
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="参数1:" VerticalAlignment="Center" Margin="0,0,5,8" FontSize="13"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ViewModel.Param1, UpdateSourceTrigger=PropertyChanged}"
+                             Height="30" VerticalContentAlignment="Center" Margin="0,0,0,8" Padding="5,0"/>
 
-  d:DesignHeight="450"
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="参数2:" VerticalAlignment="Center" Margin="0,0,5,8" FontSize="13"/>
+                    <TextBox Grid.Row="0" Grid.Column="4" Text="{Binding ViewModel.Param2, UpdateSourceTrigger=PropertyChanged}"
+                             Height="30" VerticalContentAlignment="Center" Margin="0,0,0,8" Padding="5,0"/>
 
-  d:DesignWidth="800"
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="参数3:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="13"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ViewModel.Param3, UpdateSourceTrigger=PropertyChanged}"
+                             Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
 
-  ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+                    <TextBlock Grid.Row="1" Grid.Column="3" Text="参数4:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="13"/>
+                    <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding ViewModel.Param4, UpdateSourceTrigger=PropertyChanged}"
+                             Height="30" VerticalContentAlignment="Center" Padding="5,0"/>
+                </Grid>
+            </GroupBox>
 
-  ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+            <!-- 通用操作 -->
+            <Button Content="清除日志"
+                    Command="{Binding ViewModel.ClearLogCommand}"
+                    Width="110" Height="35" HorizontalAlignment="Left"
+                    Background="#6A6A6B" Foreground="White" BorderThickness="0"
+                    Cursor="Hand">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="4"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </StackPanel>
 
-  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-
-  mc:Ignorable="d">
-
-    <Grid Margin="42">
-
-        <!-- TODO: implement Test2Page -->
-        
+        <!-- 下部：输出区域 -->
+        <GroupBox Grid.Row="1" Header="输出信息" FontSize="14" FontWeight="SemiBold">
+            <TextBox Text="{Binding ViewModel.LogOutput, UpdateSourceTrigger=PropertyChanged}"
+                     IsReadOnly="True"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Visible"
+                             HorizontalScrollBarVisibility="Auto"
+                     Background="White"
+                     FontFamily="Consolas"
+                     Padding="5"
+                     BorderThickness="1"
+                     BorderBrush="#DDDDDD"/>
+        </GroupBox>
     </Grid>
-
 </Page>

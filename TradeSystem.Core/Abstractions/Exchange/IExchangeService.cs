@@ -31,4 +31,7 @@ public enum MarketType
         
         // Get 24h ticker summaries for all symbols
         Task<IEnumerable<KLineData>> GetAll24HSummariesAsync();
+
+        // Get 24h price change percentage for all symbols (key: symbol, value: percent like 1.23 for 1.23%)
+        Task<Dictionary<string, decimal>> Get24HChangePercentAsync();
     }

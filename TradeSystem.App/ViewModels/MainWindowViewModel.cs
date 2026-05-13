@@ -139,6 +139,8 @@ public partial class MainWindowViewModel : ViewModel
         var workspace = CreateNavigationItem("Workspace", "Folder24", null);
         workspace.MenuItems.Add(CreateNavigationItem("Home", "Home24", typeof(DashboardPage)));
         workspace.MenuItems.Add(CreateNavigationItem("Data", "DataHistogram24", typeof(DataPage)));
+        workspace.MenuItems.Add(CreateNavigationItem("数据入库", "DataDownload24", typeof(DataDownloadPage)));
+        workspace.MenuItems.Add(CreateNavigationItem("排行榜", "DataTrend24", typeof(RankingPage)));
 
         NavigationItems =
         [

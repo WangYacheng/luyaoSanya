@@ -41,8 +41,9 @@ public class OkxService : IExchangeService
             var result = await _client.UnifiedApi.ExchangeData.GetSymbolsAsync(instType);
             if (!result.Success) return Enumerable.Empty<string>();
 
+            // Swap 合约的 QuoteAsset 可能为空，改用 Symbol 字符串包含判断
             return result.Data
-                .Where(s => string.IsNullOrEmpty(quoteAsset) || s.QuoteAsset.Equals(quoteAsset, StringComparison.OrdinalIgnoreCase))
+                .Where(s => string.IsNullOrEmpty(quoteAsset) || s.Symbol.IndexOf(quoteAsset, StringComparison.OrdinalIgnoreCase) >= 0)
                 .Select(s => s.Symbol);
         }
 
@@ -51,11 +52,11 @@ public class OkxService : IExchangeService
             var okxInterval = MapInterval(interval);
             
             // 修正：OKX V5 API K线接口在 UnifiedApi 下
-            var result = await _client.UnifiedApi.ExchangeData.GetKlinesAsync(symbol, okxInterval, startTime, endTime, limit);
+            var result = await _client.UnifiedApi.ExchangeData.GetKlineHistoryAsync(symbol, okxInterval, startTime, endTime, limit);
             
             if (!result.Success) return Enumerable.Empty<KLineData>();
 
-            return result.Data.Select(k => new KLineData
+            return result.Data.Where(x=>x.Confirm==true).Select(k => new KLineData
             {
                 Symbol = symbol,
                 OpenTime = k.Time,
@@ -105,13 +106,28 @@ public class OkxService : IExchangeService
             return result.Data.Select(t => new KLineData
             {
                 Symbol = t.Symbol,
-                High = (decimal)t.HighPrice,
+                High = (decimal)t.HighPrice, 
                 Low = (decimal)t.LowPrice,
                 Close = (decimal)t.LastPrice,
                 Volume = t.Volume,
-                QuoteVolume = t.QuoteVolume
+                QuoteVolume = t.QuoteVolume,
+                Open=(decimal)t.OpenPrice
                 //CreateTime = DateTime.Now
             });
+        }
+
+        public async Task<Dictionary<string, decimal>> Get24HChangePercentAsync()
+        {
+            var instType = ToOkxInstType(_currentMarketType);
+            var result = await _client.UnifiedApi.ExchangeData.GetTickersAsync(instType);
+            if (!result.Success) return [];
+
+            return result.Data.ToDictionary(
+                t => t.Symbol,
+                t => (decimal)t.OpenPrice != 0
+                    ? ((decimal)t.LastPrice - (decimal)t.OpenPrice) / (decimal)t.OpenPrice * 100m
+                    : 0m,
+                StringComparer.OrdinalIgnoreCase);
         }
 
         private KlineInterval MapInterval(TimeSpan interval)
@@ -119,6 +135,7 @@ public class OkxService : IExchangeService
             if (interval.TotalMinutes == 1) return KlineInterval.OneMinute;
             if (interval.TotalMinutes == 5) return KlineInterval.FiveMinutes;
             if (interval.TotalHours == 1) return KlineInterval.OneHour;
+            if (interval.TotalHours == 4) return KlineInterval.FourHours;
             return KlineInterval.OneDay;
         }
     }

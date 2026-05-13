@@ -18,8 +18,8 @@
 
         <!-- 上部按钮区域 -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-            <Button Content="开始测试" 
-                    Command="{Binding StartTestCommand}"
+            <Button Content="开始测试"
+                    Command="{Binding ViewModel.StartTestCommand}"
                     Width="120" Height="40" Margin="0,0,10,0"
                     Background="#007ACC" Foreground="White" BorderThickness="0">
                 <Button.Resources>
@@ -29,8 +29,8 @@
                 </Button.Resources>
             </Button>
 
-            <Button Content="清除日志" 
-                    Command="{Binding ClearLogCommand}"
+            <Button Content="清除日志"
+                    Command="{Binding ViewModel.ClearLogCommand}"
                     Width="120" Height="40" Margin="0,0,10,0"
                     Background="#6A6A6B" Foreground="White" BorderThickness="0">
                 <Button.Resources>
@@ -40,8 +40,8 @@
                 </Button.Resources>
             </Button>
 
-            <Button Content="导出报告" 
-                    Command="{Binding ExportReportCommand}"
+            <Button Content="导出报告"
+                    Command="{Binding ViewModel.ExportReportCommand}"
                     Width="120" Height="40"
                     Background="#28A745" Foreground="White" BorderThickness="0">
                 <Button.Resources>
@@ -54,7 +54,7 @@
 
         <!-- 下部输出区域 -->
         <GroupBox Grid.Row="1" Header="输出信息" FontSize="14" FontWeight="SemiBold">
-            <TextBox Text="{Binding LogOutput, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding ViewModel.LogOutput, UpdateSourceTrigger=PropertyChanged}"
                      IsReadOnly="True"
                      AcceptsReturn="True"
                      VerticalScrollBarVisibility="Auto"

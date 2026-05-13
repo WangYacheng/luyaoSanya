@@ -33,6 +33,8 @@ namespace TradeSystem.Core.Models
         // 交易金额 (计价资产数量，如多少个 USDT)
         public decimal QuoteVolume { get; set; }
 
+        public int Type { get; set; }
+
         // 业务属性：日涨幅百分比 (不存数据库，用于 UI 计算)
         public decimal ChangePct => Open != 0 ? (Close - Open) / Open * 100 : 0;
     }
