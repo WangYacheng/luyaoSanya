@@ -7,6 +7,13 @@ using OKX.Net.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Binance.Net.Clients;
+using OKX.Net.Clients;
+using OKX.Net.Enums;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TradeSystem.App.ViewModels;
 
@@ -26,8 +33,140 @@ public partial class Test2ViewModel : ViewModel
 
     [ObservableProperty]
     private string _param3 = string.Empty;
+{
+    private readonly IExchangeService _okxService;
+    private readonly IExchangeService _binanceService;
 
     [ObservableProperty]
+    private string _logOutput = string.Empty;
+
+    [ObservableProperty]
+    private string _param1 = string.Empty;
+
+    [ObservableProperty]
+    private string _param2 = string.Empty;
+
+    [ObservableProperty]
+    private string _param3 = string.Empty;
+
+    [ObservableProperty]
+    private string _param4 = string.Empty;
+
+    public Test2ViewModel(
+        [FromKeyedServices("OKX")] IExchangeService okxService,
+        [FromKeyedServices("Binance")] IExchangeService binanceService)
+    {
+        _okxService = okxService;
+        _binanceService = binanceService;
+    }
+
+    private void AppendLog(string message)
+        => LogOutput += $"[{DateTime.Now:HH:mm:ss}] {message}\n";
+
+    [RelayCommand]
+    private async Task TestGetSymbols()
+    {
+        AppendLog("获取 OKX 交易对...");
+        try
+        {
+            var marketType = Param1?.ToLower() switch
+            {
+                "spot" => MarketType.Spot,
+                _ => MarketType.Swap
+            };
+            var quoteAsset = string.IsNullOrWhiteSpace(Param2) ? "USDT" : Param2.Trim();
+            AppendLog($"参数: MarketType={marketType}, QuoteAsset={quoteAsset}");
+
+            var result = await _okxService.GetSymbolsAsync(marketType, quoteAsset);
+            var list = result.ToList();
+            AppendLog($"获取成功，共 {list.Count} 个交易对");
+
+            // 输出第一个元素的所有属性
+            if (list.Count > 0)
+            {
+                var first = list[0];
+                var type = first?.GetType();
+                AppendLog($"第一个元素类型: {type?.Name}");
+
+                if (type == typeof(string))
+                {
+                    AppendLog($"  Value: {first}");
+                }
+                else
+                {
+                    foreach (var prop in type?.GetProperties() ?? [])
+                    {
+                        try
+                        {
+                            var val = prop.GetValue(first);
+                            AppendLog($"  {prop.Name}: {val}");
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendLog($"  {prop.Name}: <{ex.Message}>");
+                        }
+                    }
+                }
+                if (list.Count > 1)
+                    AppendLog($"  ... 还有 {list.Count - 1} 个未展开");
+            }
+        }
+        catch (Exception ex)
+        {
+            AppendLog($"错误: {ex.Message}");
+        }
+        AppendLog("完成");
+    }
+
+    [RelayCommand]
+    private async Task TestGetBinanceSymbols()
+    {
+        AppendLog("获取 Binance USDT 永续合约...");
+        try
+        {
+            var marketType = Param1?.ToLower() == "spot" ? MarketType.Spot : MarketType.Swap;
+            var quoteAsset = string.IsNullOrWhiteSpace(Param2) ? "USDT" : Param2.Trim();
+            AppendLog($"参数: MarketType={marketType}, QuoteAsset={quoteAsset}");
+
+            var result = await _binanceService.GetSymbolsAsync(marketType, quoteAsset);
+            var list = result.ToList();
+            AppendLog($"获取成功，共 {list.Count} 个交易对");
+
+            if (list.Count > 0)
+            {
+                var first = list[0];
+                var type = first?.GetType();
+                AppendLog($"第一个元素类型: {type?.Name}");
+
+                if (type == typeof(string))
+                {
+                    AppendLog($"  Value: {first}");
+                }
+                else
+                {
+                    foreach (var prop in type?.GetProperties() ?? [])
+                    {
+                        try
+                        {
+                            var val = prop.GetValue(first);
+                            AppendLog($"  {prop.Name}: {val}");
+                        }
+                        catch (Exception ex)
+                        {
+                            AppendLog($"  {prop.Name}: <{ex.Message}>");
+                        }
+                    }
+                }
+                if (list.Count > 1)
+                    AppendLog($"  ... 还有 {list.Count - 1} 个未展开");
+            }
+        }
+        catch (Exception ex)
+        {
+            AppendLog($"错误: {ex.Message}");
+        }
+        AppendLog("完成");
+    }
     private string _param4 = string.Empty;
 
     public Test2ViewModel(

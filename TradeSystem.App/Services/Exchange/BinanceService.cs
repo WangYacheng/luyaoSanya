@@ -56,6 +56,7 @@ public class BinanceService : IExchangeService
         if (!result.Success) return Enumerable.Empty<KLineData>();
 
         return result.Data.Where(x => x.CloseTime < DateTime.UtcNow).Select(k => new KLineData
+        
         {
             Symbol = symbol,
             OpenTime = k.OpenTime,
@@ -64,6 +65,7 @@ public class BinanceService : IExchangeService
             Low = k.LowPrice,
             Close = k.ClosePrice,
             Volume = k.Volume,
+            QuoteVolume = k.QuoteVolume
             QuoteVolume = k.QuoteVolume
             //CreateTime = DateTime.Now 
         });
@@ -114,6 +116,7 @@ public class BinanceService : IExchangeService
                 OpenTime = t.OpenTime,         // 使用接口返回的实际开启时间
                 //CloseTime = t.CloseTime        // 使用接口返回的实际结束时间
                 Open=t.OpenPrice
+                Open=t.OpenPrice
             });
         }
         else
@@ -148,11 +151,23 @@ public class BinanceService : IExchangeService
             StringComparer.OrdinalIgnoreCase);
     }
 
+    public async Task<Dictionary<string, decimal>> Get24HChangePercentAsync()
+    {
+        var result = await _client.UsdFuturesApi.ExchangeData.GetTickersAsync();
+        if (!result.Success) return [];
+
+        return result.Data.ToDictionary(
+            t => t.Symbol,
+            t => t.PriceChangePercent,
+            StringComparer.OrdinalIgnoreCase);
+    }
+
     private Binance.Net.Enums.KlineInterval MapInterval(TimeSpan interval)
     {
         if (interval.TotalMinutes == 1) return Binance.Net.Enums.KlineInterval.OneMinute;
         if (interval.TotalMinutes == 5) return Binance.Net.Enums.KlineInterval.FiveMinutes;
         if (interval.TotalHours == 1) return Binance.Net.Enums.KlineInterval.OneHour;
+        if (interval.TotalHours == 4) return Binance.Net.Enums.KlineInterval.FourHour;
         if (interval.TotalHours == 4) return Binance.Net.Enums.KlineInterval.FourHour;
         return Binance.Net.Enums.KlineInterval.OneDay;
     }
