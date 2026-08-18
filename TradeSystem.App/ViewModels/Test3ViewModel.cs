@@ -1,8 +1,10 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TradeSystem.Core.Models;
+using TradeSystem.Infrastructure.Data;
 
 namespace TradeSystem.App.ViewModels;
 
@@ -10,6 +12,7 @@ public partial class Test3ViewModel : ViewModel
 {
     private readonly IExchangeService _binanceService;
     private readonly IExchangeService _okxService;
+    private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
 
     [ObservableProperty]
     private string _exchange = "Binance";
@@ -41,12 +44,17 @@ public partial class Test3ViewModel : ViewModel
     [ObservableProperty]
     private bool _isLoading;
 
+    [ObservableProperty]
+    private bool _isSaving;
+
     public Test3ViewModel(
         [FromKeyedServices("Binance")] IExchangeService binance,
-        [FromKeyedServices("OKX")] IExchangeService okx)
+        [FromKeyedServices("OKX")] IExchangeService okx,
+        IDbContextFactory<AppDbContext> dbContextFactory)
     {
         _binanceService = binance;
         _okxService = okx;
+        _dbContextFactory = dbContextFactory;
     }
 
     [RelayCommand]
@@ -129,6 +137,67 @@ public partial class Test3ViewModel : ViewModel
         }
 
         return allResults;
+    }
+
+    [RelayCommand]
+    private async Task SaveToDatabase()
+    {
+        if (IsSaving || KLineResults.Count == 0) return;
+
+        IsSaving = true;
+        LogOutput += "---\n开始入库...\n";
+
+        try
+        {
+            await using var db = await _dbContextFactory.CreateDbContextAsync();
+
+            var symbols = KLineResults.Select(k => k.Symbol).Distinct().ToList();
+            var minTime = KLineResults.Min(k => k.OpenTime);
+            var maxTime = KLineResults.Max(k => k.OpenTime);
+
+            var existingKeys = await db.KLines
+                .Where(k => k.Exchange == Exchange
+                         && k.TimeFrame == Interval
+                         && symbols.Contains(k.Symbol)
+                         && k.OpenTime >= minTime
+                         && k.OpenTime <= maxTime)
+                .Select(k => new { k.Exchange, k.Symbol, k.OpenTime, k.TimeFrame })
+                .ToListAsync();
+
+            var existingSet = existingKeys
+                .Select(k => $"{k.Exchange}|{k.Symbol}|{k.OpenTime.Ticks}|{k.TimeFrame}")
+                .ToHashSet();
+
+            var newKlines = KLineResults
+                .Where(k => !existingSet.Contains($"{Exchange}|{k.Symbol}|{k.OpenTime.Ticks}|{Interval}"))
+                .ToList();
+
+            if (newKlines.Count == 0)
+            {
+                LogOutput += "无新数据，全部已存在\n";
+                return;
+            }
+
+            foreach (var k in newKlines)
+            {
+                k.Exchange = Exchange;
+                k.TimeFrame = Interval;
+                k.Type = 1;
+            }
+
+            db.KLines.AddRange(newKlines);
+            await db.SaveChangesAsync();
+
+            LogOutput += $"入库完成: 新增 {newKlines.Count} 条，跳过 {KLineResults.Count - newKlines.Count} 条重复\n";
+        }
+        catch (Exception ex)
+        {
+            LogOutput += $"入库错误: {ex.Message}\n";
+        }
+        finally
+        {
+            IsSaving = false;
+        }
     }
 
     private static TimeSpan MapInterval(string interval)

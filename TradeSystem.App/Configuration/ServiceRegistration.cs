@@ -77,6 +77,9 @@ namespace TradeSystem.App.Configuration
                     services.AddSingleton<KLineRankingViewModel>();
                     services.AddSingleton<KLineRankingPage>();
 
+                    services.AddSingleton<GridPage>();
+                    services.AddSingleton<GridViewModel>();
+                    
                     // 注册交易所服务
                     services.AddKeyedScoped<IExchangeService, BinanceService>("Binance");
                     services.AddKeyedScoped<IExchangeService, OkxService>("OKX");

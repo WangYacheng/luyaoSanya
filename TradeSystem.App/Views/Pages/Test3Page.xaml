@@ -36,6 +36,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- 交易所 -->
@@ -83,6 +84,22 @@
                             IsEnabled="{Binding ViewModel.IsLoading, Converter={StaticResource InvertBoolConverter}}"
                             Width="110" Height="56"
                             Background="#007ACC" Foreground="White" BorderThickness="0"
+                            VerticalAlignment="Bottom"
+                            Margin="0,0,6,0">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+
+                    <!-- 入库按钮 -->
+                    <Button Grid.Column="6"
+                            Content="入库"
+                            Command="{Binding ViewModel.SaveToDatabaseCommand}"
+                            IsEnabled="{Binding ViewModel.IsSaving, Converter={StaticResource InvertBoolConverter}}"
+                            Width="80" Height="56"
+                            Background="#28A745" Foreground="White" BorderThickness="0"
                             VerticalAlignment="Bottom">
                         <Button.Resources>
                             <Style TargetType="Border">
